@@ -1,0 +1,13 @@
+/* .body{
+    background-image: url(../img/FondoZoom.jpg);
+    background-size: cover;
+    height: 400px;
+    display: flex;
+    align-items: center;
+} */
+
+.noticia-card{
+    width: 70%;
+    display: flex;    
+    justify-content: center;
+}

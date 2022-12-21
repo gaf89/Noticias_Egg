@@ -1,0 +1,8 @@
+.tabla{
+    width: 85%;      
+    margin: 0 auto;
+}
+
+table td:first-child {
+    width: 250px;
+  }

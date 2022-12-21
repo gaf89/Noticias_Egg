@@ -1,0 +1,15 @@
+.header{    
+    display: flex;
+    justify-content: center;
+}
+
+.body{
+    background-image: url(../img/FondoZoom_2.jpg);    
+    background-size: cover;    
+}
+
+.noticia-card{
+    width: 75%;
+    display: flex;    
+    justify-content: center;
+}
