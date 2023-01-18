@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <title>Lista de Noticias</title>
         <meta charset="UTF-8">
@@ -35,7 +35,7 @@
                   <tr>                    
                     <th scope="col">Alta</th>
                     <th scope="col">Título</th>
-                    <th scope="col">Accion</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Accion</th>
                   </tr>
                 </thead>
                 <tbody th:each="noticia : ${noticias}">
@@ -43,7 +43,7 @@
                     <td th:text="${noticia.alta}">21:45:00 2022/12/07</td>
                     <td th:text="${noticia.titulo}">Titulo 1</td>
                     <td>
-                      <a th:href="@{/noticia/modificar/__${noticia.id}__}"> Modificar </a>
+                      <a sec:authorize="hasRole('ADMIN')" th:href="@{/noticia/modificar/__${noticia.id}__}"> Modificar </a>
                     </tr>                  
                 </tbody>
             </table>

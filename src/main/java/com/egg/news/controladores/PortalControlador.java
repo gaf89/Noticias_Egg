@@ -2,12 +2,14 @@
 package com.egg.news.controladores;
 
 import com.egg.news.entidades.Noticia;
+import com.egg.news.entidades.Usuario;
 import com.egg.news.excepciones.MiException;
 import com.egg.news.servicio.NoticiaServicio;
 import com.egg.news.servicio.UsuarioServicio;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -68,17 +70,27 @@ public class PortalControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/inicio")
-    public String inicio(ModelMap modelo){
+    public String inicio(HttpSession session, ModelMap modelo){
         
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+                
         List<Noticia> noticias = noticiaServicio.listarNoticias();
         
         modelo.addAttribute("noticias", noticias);
         
-        return "inicio.html";
+        if (logueado.getRol().toString().equals("ADMIN")) {
+            return "redirect:/admin/dashboard";
+        }
+        
+            return "inicio.html";
     }
     
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/panelAdmin")
-    public String panelAdmin(ModelMap modelo){
+    public String panelAdmin(HttpSession session, ModelMap modelo){
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
         List<Noticia> noticias = noticiaServicio.listarNoticias();
         
         modelo.addAttribute("noticias", noticias);

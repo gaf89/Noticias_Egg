@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
   <title>Pane de Administración</title>
@@ -12,7 +12,9 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light" tyle="background-color: #e3f2fd;">
+    
+    <nav th:replace="/fragments/navbar :: nav">  </nav>
+<!--  <nav class="navbar navbar-expand-lg navbar-light bg-light" tyle="background-color: #e3f2fd;">
     <a class="navbar-brand" href="#"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +30,7 @@
         </li>
       </ul>
     </div>
-  </nav>
+  </nav>-->
 
   <div class="card">
     <div class="card-body">
@@ -45,8 +47,8 @@
           <tr>                    
             <th scope="col">Alta</th>
             <th scope="col">Título</th>
-            <th scope="col">Modificar</th>
-            <th scope="col">Eliminar</th>
+            <th scope="col" sec:authorize="hasRole('ADMIN')">Modificar</th>
+            <th scope="col" sec:authorize="hasRole('ADMIN')">Eliminar</th>
           </tr>
         </thead>
         <tbody th:each="noticia : ${noticias}">
@@ -54,11 +56,11 @@
             <td th:text="${noticia.alta}"></td>
             <td th:text="${noticia.titulo}"></td>
             <td>
-              <a th:href="@{/noticia/modificar/__${noticia.id}__}" class="btn btn-secondary">Modificar</a>
+              <a sec:authorize="hasRole('ADMIN')" th:href="@{/noticia/modificar/__${noticia.id}__}" class="btn btn-secondary">Modificar</a>
             </td>
             <td>
                <!-- Button trigger modal -->
-              <a th:href="@{/noticia/eliminar/__${noticia.id}__}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              <a sec:authorize="hasRole('ADMIN')" th:href="@{/noticia/eliminar/__${noticia.id}__}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                 Eliminar
               </a>
               <!-- Modal -->
