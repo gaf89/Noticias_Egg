@@ -18,7 +18,15 @@
 
   <header class="header">
     <div>
-      <a class="navbar-brand text-dark" href="#"> NOTICIAS EGG </a>
+      <p th:if="${session.usuariosession != null}" th:text=" 'Hola de vuelta '+ ${session.usuariosession.nombre} "></p>      
+    </div>  
+    <div class="container">
+        <a class="d-flex align-items-center">
+            <img th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" >
+        </a>
+    </div>
+     <div>
+        <a class="navbar-brand text-dark" href="#"> NOTICIAS EGG </a>
     </div>
   </header>
 
@@ -27,7 +35,7 @@
       <div class="col-12 col-lg-6" th:each="noticia : ${noticias}">
         <div class="card h-100">
           <div class="card-body">
-            <h5 class="card-title" th:text="${noticia.titulo}"></h5>          
+            <h5 class="card-title" th:text="${noticia.titulo}"></h5> 
             <a th:href="@{/noticia/mostrar/__${noticia.id}__}" class="btn btn-primary">Leer Más</a>
           </div>
         </div>

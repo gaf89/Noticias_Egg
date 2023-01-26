@@ -10,12 +10,20 @@
           <a class="nav-link" th:href="@{/inicio}">Inicio<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/panelAdmin}">Administrar</a>
+          <a class="nav-link" th:if="${session.usuariosession != null}" sec:authorize="hasRole('ADMIN')" th:href="@{/panelAdmin}">Administrar</a>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Perfil</a>
+            <a class="nav-link dropdown-toggle" th:if="${session.usuariosession != null}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Perfil</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/logout">Cerrar Sesión</a>              
+             <a class="dropdown-item" th:href="@{/perfil}" >Editar Perfil</a>
+             <hr class="dropdown-divider">
+             <a class="dropdown-item" href="/logout" >Cerrar Sesión</a>            
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" th:if="${session.usuariosession == null}" th:href="@{/registrar}">Registrarse</a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" th:if="${session.usuariosession == null}" th:href="@{/login}">Ingresar</a>
         </li>
       </ul>
     </div>

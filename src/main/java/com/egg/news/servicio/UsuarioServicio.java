@@ -1,14 +1,15 @@
 
 package com.egg.news.servicio;
 
+import com.egg.news.entidades.Imagen;
 import com.egg.news.entidades.Usuario;
 import com.egg.news.enumeradores.Rol;
 import com.egg.news.excepciones.MiException;
 import com.egg.news.repositorio.UsuarioRepositorio;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,8 +19,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuarioServicio implements UserDetailsService{
@@ -27,8 +30,11 @@ public class UsuarioServicio implements UserDetailsService{
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
     
+    @Autowired
+    private ImagenServicio imagenServicio;
+    
     @Transactional
-    public void registrar(String nombre, String email, String password, String password2) throws MiException {
+    public void registrar(MultipartFile archivo, String nombre, String email, String password, String password2) throws MiException {
         
         validar(nombre, email, password, password2);
         
@@ -41,7 +47,43 @@ public class UsuarioServicio implements UserDetailsService{
         
         usuario.setRol(Rol.USER);
         
+        Imagen imagen = imagenServicio.guardar(archivo);
+        
+        usuario.setImagen(imagen);
+        
         usuarioRepositorio.save(usuario);
+    }
+    
+    @Transactional
+    public void actualizar(MultipartFile archivo, String idUsuario, String nombre, String email, String password,
+            String password2) throws MiException {
+        
+        validar(nombre, email, password, password2);
+                
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(idUsuario);
+        if(respuesta.isPresent()){
+            
+            Usuario usuario = respuesta.get();        
+            usuario.setNombre(nombre);
+            usuario.setEmail(email);
+
+            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+
+            usuario.setRol(Rol.USER);
+
+            String idImagen = null;
+            
+            if (usuario.getImagen() != null) {
+                idImagen = usuario.getImagen().getId();
+            }
+            
+            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+
+            usuario.setImagen(imagen);
+            
+            usuarioRepositorio.save(usuario);
+        }
+ 
     }
     
     public void validar(String nombre, String email, String password, String password2) throws MiException{
@@ -58,6 +100,10 @@ public class UsuarioServicio implements UserDetailsService{
         if (!password.equals(password2)) {
             throw new MiException("Las contraseñas ingresadas deben ser iguales");
         }
+    }
+    
+    public Usuario getOne(String id){
+        return usuarioRepositorio.getOne(id);
     }
 
     @Override
